@@ -41,7 +41,26 @@
 \small
 \section{緒言}%===========================
 %本文：明朝体・9pt（欧文Times New Roman, 9pt）、文字間隔は１行26文字程度、行間隔は4.2mm程度にして下さい。
-自律移動ロボットが実環境で走行することを考えると,変化する目的地や経路に対して即座に最適な行動計画が必要となる.価値反復を移動ロボットのナビゲーションに適用するとロボットの様々な状態に対して最適な行動を計算することができる.
+価値反復は、最適制御理論を用いて、有限マルコフ決定過程における最適方策を正確に求めることができる手法である[1].
+自律移動ロボットが実環境で走行することを考えると,変化する目的地や経路に対して即座に最適な行動計画が必要となる.
+例えば,掃除用や運搬用の自律移動ロボットを考えると,目的地の到達したから即座に次の目的地への行動の計画が必要である.
+さらに,実時間で行動を計画しなければ,現場にいる同様のロボットや動く人に対応することが難しい.
+価値反復を移動ロボットのナビゲーションに適用するとロボットの様々な状態に対して最適な行動を計算することができる[2].
+ただし計算量が大きくなってしまう.
+
+計算量の問題を考えると, A*[3]という探索アルゴリズムは実際のコスト（距離や時間）と事前情報から予測されるコストからひとつの経路を求めることを主な目的としているため,計算量が少ない.
+しかし,事前情報に依存しているため,未知の障害物などの事前情報にはないものへの対処が困難である.
+
+一方,上田らは価値反復を用いたナビゲーションは限られた環境の広さであれば利用できるのではないかと考え ROS パッケージを実装した[4].
+このパッケージを用いると,ロボットが走行中,常に価値反復を行うため,計算量が多いが
+\begin{itemize}
+	\item 決められた行動の中で最適な経路を導出
+	\item ロボットの様々な状態（位置や向き）での最適な行動を選択
+ \end{itemize}
+することができるでの,環境のあらゆる地点で最適な行動を計算可能である.そして100$\mathrm{[m^2]}$の広さのシミュレータ環境で2秒の計算コストで行動計画が可能であることが確認されている.
+
+そこで本稿では,価値反復を用いた実時間経路計画アルゴリズムを屋外移動ロボットで用い,屋外の実環境を走行させ計算量を評価する.
+このアルゴリズムを用いると理論上,最適な経路を得ることができるが計算量が大きいため,実機に適用できるか調査する.
 %\subsection{論文作成に関する注意事項を以下に示します。（中見出し：ゴシック体・9pt・強調文字・左寄せ）}%-----------
 
 
@@ -49,19 +68,18 @@
 
 %※ 講演番号、講演会名、ページ番号は記載しないようにして下さい。
 \section{実験}%===========================
-本研究では上田らが開発したROSパッケージ（\href{https://github.com/ryuichiueda/value_iteration}{https://github.com/ryuichiueda/value\_iteration}）[]を実装し実験を行った.
-このパッケージを用いると100$\mathrm{[m^2]}$の広さの環境で2秒の計算コストで行動計画が可能である.
-そのため今回は千葉工業大学津田沼キャンパス内でロボット（Raspberry Pi Cat）を走行させ計算量を測定する.
+本研究では上田らが開発したROSパッケージ（\href{https://github.com/ryuichiueda/value_iteration}{https://github.com/ryuichiueda/value\_iteration}）[4]を実装し実験を行った.
+本研究では千葉工業大学津田沼キャンパス内でロボット（Raspberry Pi Cat）を走行させ計算量を測定する.
 地図のスタート地点から走行させ,各ポイントを通過するコースを設定し,価値反復の計算時間を計測した.
 計算機には CPU として Intel Core i7-12700H（14コア28スレッド）, DRAM として DDR4-3200 16GB を用いた.
-自己位置推定には上田らが作成したROSのemclパッケージ（\href{https://github.com/ryuichiueda/emcl2}{https://github.com/ryuichiueda/emcl2}）[],価値反復の際のコストの計算には占有格子地図を用いた.
+自己位置推定には上田らが作成したROSのemclパッケージ（\href{https://github.com/ryuichiueda/emcl}{https://github.com/ryuichiueda/emcl}）[5],価値反復の際のコストの計算には占有格子地図を用いた.
+
+%地図の画像とポイントを記載した画像はここに掲載予定
 
 Table 1 には,地図の大きさ,格子の解像度,ロボットが移動できる地図のセルの数,面積を記載する.
-%地図の画像とポイントを記載した画像はこれから
 
 \begin{table}[hbtp]
   \caption{conﬁgurations of the map}
-  %\label{table:data_type}
   \centering
   \begin{tabular}{l|r}
     \hline
@@ -74,9 +92,11 @@ Table 1 には,地図の大きさ,格子の解像度,ロボットが移動でき
   \end{tabular}
 \end{table}
 
+Table 2 には,価値反復の離散状態数と行動の数を記載する.
+離散状態数は,今回用いる地図のセルの数に,θ 軸上の区分数（今回の実験では60）をかけたものである.
+
 \begin{table}[hbtp]
   \caption{parameters for value iterations}
-  %\label{table:data_type}
   \centering
   \begin{tabular}{l|r}
     \hline
@@ -87,11 +107,53 @@ Table 1 には,地図の大きさ,格子の解像度,ロボットが移動でき
   \end{tabular}
 \end{table}
 
-\subsection{計算量の測定}
+Table 3 には,6種類の行動と各行動の前進の速度と角速度を記載する.
+この値は使用するロボットに合わせ,適切だと考えられる値の調整したものである.
 
+\begin{table}[hbtp]
+	\caption{type of actions}
+	\centering
+	 \begin{tabular}{l|cc}
+		\hline
+		 & forward & angular \\
+		type & versity[m/s] & versity[deg/s] \\
+		\hline \hline
+		forward &  &  \\
+		backward &  &  \\
+		right &  &  \\
+		left &  &  \\
+		right forward &  &  \\
+		left forward &  & \\
+		\hline
+	 \end{tabular}
+ \end{table}
+
+\subsection{計算量の評価}
+評価する方法としては,上田らの研究[4]と同様の方法を用いる.
+しかし,スレッド数の増加によってナビゲーションにかかる時間が短縮すること,
+そして,物理コア数以上のスレッド数を用いた場合,短縮の効果が頭打ちであるという結果がでているので,
+本研究では使用する計算機の物理コア数が20コアであるため,スレッド数は20に固定して実験を行う.
 \subsection{実験結果}
-
-\section{結論}%===========================
+Table 4 に A と B のそれぞれの場合の実験結果を示す.
+A と B の計測の内容は以下のとおりである.
+\begin{itemize}
+	\item A: 価値反復中からロボットを動作させて計測
+	\item B: 価値反復が終了したあとにロボットを動作させて計測
+ \end{itemize}
+\begin{table}[hbtp]
+	\caption{computational complexity}
+	\centering
+	 \begin{tabular}{l|cc}
+		\hline
+		 & average & standard \\
+		 & of total time[s] & deviation[s] \\
+		\hline \hline
+		A &  &  \\
+		B &  &  \\
+		\hline
+	 \end{tabular}
+ \end{table}
+\section{結言}%===========================
 
 
 
@@ -103,14 +165,19 @@ Table 1 には,地図の大きさ,格子の解像度,ロボットが移動でき
 	Bellman, R., ``{\it Dynamic Programming},'' Princeton Uni-versity Press, Princeton, NJ, 1957.
 
 	\bibitem{Shinjuku2}
+	上田隆一，池邉龍宏，林原靖男，``移動ロボットのナビゲーションのためのbrute-forceな価値反復を用いた大域計画・局所計画アルゴリズム'', 
+	第27回ロボティクスシンポジア講演論文集, 2022.
+	
+	\bibitem{Shinjuku3}
+	Hart, P. E., Nilsson, N. J. and Raphael, B. ``A Formal
+	Basis for the Heuristic Determination of Minimal Cost
+	Paths,'' {\it IEEE Transactions on Systems Science and Cybernetics}, Vol. 4, No. 2, pp. 100-107, 1968.
+	
+	\bibitem{Shinjuku4}
 	上田隆一，池邉龍宏，林原靖男，``brute-forceな価値反復を用いた実時間経路計画ROSパッケージ'', 
 	第39回日本ロボット学会学術講演会予稿集, 2021.
 
-	\bibitem{Shinjuku3}
-	上田隆一，池邉龍宏，林原靖男，``移動ロボットのナビゲーションのためのbrute-forceな価値反復を用いた大域計画・局所計画アルゴリズム'', 
-	第27回ロボティクスシンポジア講演論文集, 2022.
-
-	\bibitem{Shinjuku4}
+	\bibitem{Shinjuku5}
 	Ueda, R., {\it et al}., ``Real-Time Decision Making with State-Value Function under Uncertainty of State Estimation,''
 	 in {\it Proc. of} ICRA, 2005.
 
