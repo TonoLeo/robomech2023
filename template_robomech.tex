@@ -8,7 +8,7 @@
 \makeatletter
 \title{価値反復を用いた移動ロボットによる屋外ナビゲーション}
 {―日本語副題：ゴシック体・12pt(欧文Arial・12pt)―}
-{English Title: Times New Roman, 12pt}
+{Outdoor navigation with a mobile robot using value iteration}
 {-English Subtitle: Times New Roman, 10pt-}
 
 \author{
@@ -32,7 +32,7 @@
 }
 
 \date{} % 日付を出力しない
-\keywords{Robot, Manipulation,… (no more than five words) [Times New Roman, 9pt]}
+\keywords{Autonomous mobile robots, Navigation, route planning generation}
 
 \maketitle
 \thispagestyle{empty}
@@ -83,11 +83,11 @@ Table 1 には,地図の大きさ,格子の解像度,ロボットが移動でき
   \centering
   \begin{tabular}{l|r}
     \hline
-    map size & \\
-    cell resolution &  \\
-		number of cells & \\
-    number of free cells & \\
-		the area of the free cells & \\
+    map size & 294.3$\mathrm{[m]}$ × 199.95$\mathrm{[m]}$\\
+    cell resolution &  0.15$\mathrm{[m]}$ × 0.15$\mathrm{[m]}$ \\
+		number of cells & 2,615,346\\
+    number of free cells & 165,076\\
+		the area of the free cells & 3714.98$\mathrm{[m^2]}$\\
     \hline
   \end{tabular}
 \end{table}
@@ -100,9 +100,9 @@ Table 2 には,価値反復の離散状態数と行動の数を記載する.
   \centering
   \begin{tabular}{l|r}
     \hline
-    number of states & \\
-    number of free states &  \\
-		number of actions & \\
+    number of states & 156,920,760\\
+    number of free states &  9,904,560\\
+		number of actions & 6\\
     \hline
   \end{tabular}
 \end{table}
@@ -118,12 +118,12 @@ Table 3 には,6種類の行動と各行動の前進の速度と角速度を記�
 		 & forward & angular \\
 		type & versity[m/s] & versity[deg/s] \\
 		\hline \hline
-		forward &  &  \\
-		backward &  &  \\
-		right &  &  \\
-		left &  &  \\
-		right forward &  &  \\
-		left forward &  & \\
+		forward & 0.3 & 0.0 \\
+		backward & -0.2 & 0.0 \\
+		right & 0.0 & -20.0 \\
+		left & 0.0 & 20.0 \\
+		right forward & 0.2 & -20.0 \\
+		left forward & 0.2 & 20.0 \\
 		\hline
 	 \end{tabular}
  \end{table}
