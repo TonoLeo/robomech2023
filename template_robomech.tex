@@ -28,17 +28,13 @@
 \makeatother
 
 \abstract{ \small
-We examine our software package for mobile robot navigation in the real world. 
-This software uses value iteration for updating a decision making policy 
-in the whole state space. Though the computational cost of this method
-is too large for current computers, we expect that it will be standard
-in future. In the experiments, we use this package with a laptop computer on
-a mobile robot. Though the calculation time is still a problem,  
-it works on the mobile robot for the first time. 
+The authors used a real-time path planning algorithm with value iteration on an outdoor mobile robot and evaluated the computational complexity.
+Although the algorithm can theoretically obtain an optimal path, it is computationally expensive, so the authors investigated whether the algorithm can be applied to a real robot in a real outdoor environment with a free space of 3714.98$\mathrm{[m^2]}$.
+For the evaluation, the resolution of the map used for value iteration was set to 0.15$\mathrm{[m/pixel]}$, a computer with an Intel Core i7-11800H was used as the computing machine, and a Raspberry Pi Cat was used as the aircraft, and it was confirmed that the calculation was completed in 84.6$\mathrm{[s]}$. 
 }
 
 \date{} % 日付を出力しない
-\keywords{mobile robot navigation, brute-force value iteration}
+\keywords{robot navigation, brute-force value iteration}
 
 \maketitle
 \thispagestyle{empty}
@@ -47,24 +43,25 @@ it works on the mobile robot for the first time.
 \small
 \section{緒言}%===========================
 %本文：明朝体・9pt（欧文Times New Roman, 9pt）、文字間隔は１行26文字程度、行間隔は4.2mm程度にして下さい。
-価値反復は、最適制御理論を用いて、有限マルコフ決定過程における最適方策を正確に求めることができる手法である[1].
-自律移動ロボットが実環境で走行することを考えると,変化する目的地や経路に対して即座に行動計画を必要となる.
-例えば,運搬用の自律移動ロボットを考えると,目的地の到達したから即座に次の目的地への行動の計画が必要である.
-さらに,安定した行動を計画しなければ,現場にいる同様のロボットや動く人に対応することが難しい.
-
+価値反復は, 最適制御理論を用いて, 有限マルコフ決定過程における最適方策を正確に求めることができる手法である[1].
 価値反復を移動ロボットの行動計画に適用するとロボットの様々な状態に対して最適な行動を計算することができる[2].
-しかし,実際のコスト（距離や時間）と事前情報から予測されるコストからひとつの経路を求めることを主な目的とした A*[3]よりも計算量が大きくなってしまう.
+しかし, 実際のコスト（距離や時間）と事前情報から予測されるコストからひとつの経路を求めることを主な目的とした A*[3]よりも計算量が大きくなってしまう.
 
-一方,上田らは価値反復を用いたナビゲーションは限られた環境の広さであれば利用できるのではないかと考え ROS パッケージを実装した[4].
-このパッケージを用いると,ロボットが走行中,常に価値反復を行うため,計算量が多いが
+一方, 上田らは価値反復を用いたナビゲーションは限られた環境の広さであれば利用できるのではないかと考え ROS パッケージを実装した[4].
+このパッケージを用いると, ロボットが走行中, 常に価値反復を行うため, 計算量が多いが
 \begin{itemize}
 	\item 決められた行動の中で最適な経路を導出
 	\item ロボットの様々な状態（位置や向き）での最適な行動を選択
  \end{itemize}
-することができるでの,環境のあらゆる地点で最適な行動を計算可能である.そして100$\mathrm{[m^2]}$の広さのシミュレータ環境で2秒の計算コストで行動計画が可能であることが確認されている.
+することができるので, 環境のあらゆる地点で最適な行動を計算可能である. そして100$\mathrm{[m^2]}$の広さのシミュレータ環境では, 2秒の計算コストで行動計画が可能であることが確認されている.
 
-そこで本稿では,価値反復を用いた実時間経路計画アルゴリズムを屋外移動ロボットで用い,屋外の実環境を走行させ計算量を評価する.
-このアルゴリズムを用いると理論上,最適な経路を得ることができるが計算量が大きいため,実機に適用できるか調査する.
+移動ロボットが実環境で走行することを考えると, 変化する目的地や経路に対して即座に行動計画を必要となる.
+例えば, 運搬用の移動ロボットを考えると, 目的地の到達したから即座に次の目的地への行動の計画が必要である.
+さらに, 安定した行動を計画しなければ, 現場にいる同様のロボットや動く人に対応することが難しい.
+
+そこで本稿では, 価値反復を用いた実時間経路計画アルゴリズムを屋外移動ロボットで用い, 屋外の実環境を走行させ計算量を評価する.
+このアルゴリズムを用いると理論上, 最適な経路を得ることができるが計算量が大きいため, 実機に搭載した際に走ることができるのか, 実機に搭載して屋外を走行させた場合, 価値反復の計算にどのくらい時間がかかるのかを調査する.
+
 %\subsection{論文作成に関する注意事項を以下に示します。（中見出し：ゴシック体・9pt・強調文字・左寄せ）}%-----------
 
 
@@ -72,18 +69,32 @@ it works on the mobile robot for the first time.
 
 %※ 講演番号、講演会名、ページ番号は記載しないようにして下さい。
 \section{実験}%===========================
-今回の実験では上田らが開発したROSパッケージ（\href{https://github.com/ryuichiueda/value_iteration}{https://github.com/ryuichiueda/value\_iteration}）[4]を実装し実験を行った.
+今回の実験では上田らが開発したROSパッケージ（\href{https://github.com/ryuichiueda/value_iteration}{https://github.com/ryuichiueda/value\_iteration}のコミット22422bc\dots）[4]を実装し実験を行った.
+このROSパッケージ[4]は, 2次元の離散化した占有格子地図を読み込み, ロボットの向きの1次元を加えた3次元の離散空間で経路計画を行っている.
 本研究では千葉工業大学津田沼キャンパス内でロボット（Raspberry Pi Cat）を走行させ計算量を測定する.
-地図のスタート地点から設定したゴール地点まで10回走行させ,価値反復の計算量を計測した.
+地図（Fig. 1）のスタート地点から設定したゴール地点（15.6$\mathrm{[m]}$）まで10回走行させ, 価値反復の計算量を計測した.
+使用した地図（Fig. 1）は, 幅が1962$\mathrm{[pixel]}$, 高さが1333$\mathrm{[pixel]}$である.
 
 計算機には CPU として Intel Core i7-11800H（8コア16スレッド）, DRAM として DDR4-3200 64GB を用いた.
-自己位置推定には上田らが作成したROSのemclパッケージ（\href{https://github.com/ryuichiueda/emcl}{https://github.com/ryuichiueda/emcl}）[5],価値反復の際のコストの計算には占有格子地図を用いた.
+自己位置推定には上田らが作成したROSのemclパッケージ（\href{https://github.com/ryuichiueda/emcl}{https://github.com/ryuichiueda/emcl}）[5], 価値反復の際のコストの計算には占有格子地図を用いた.
 
-Table 1 には,地図の大きさ,格子の解像度,ロボットが移動できる地図のセルの数,面積を記載する.
-Table 2 には,価値反復の離散状態数と行動の数を記載する.
-離散状態数は,今回用いる地図のセルの数に,θ 軸上の区分数（今回の実験では60）をかけたものである.
-Table 3 には,6種類の行動と各行動の前進の速度と角速度を記載する.
-この値は使用するロボットに合わせ,適切だと考えられる値に調整したものである.
+Table 1 には, 地図の大きさ, 格子の解像度, ロボットが移動できる地図のセルの数, 面積を記載する.
+Table 2 には, 価値反復の離散状態数と行動の数を記載する.
+離散状態数は, 今回用いる地図のセルの数に, θ 軸上の区分数（今回の実験では60）をかけたものである.
+Table 3 には, 6種類の行動と各行動の前進の速度と角速度を記載する.
+この値は使用するロボットに合わせ, 適切だと考えられる値に調整したものである.
+
+\begin{figure}[h!]
+  \centering
+   \includegraphics[height=40mm]{./figs/tsudanuma.png}
+   \caption{the map for value iteration}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+   \includegraphics[height=40mm]{./figs/raspicat.png}
+   \caption{the map for value iteration}
+\end{figure}
 
 \begin{table}[hbtp]
   \caption{conﬁgurations of the map}
@@ -109,9 +120,6 @@ Table 3 には,6種類の行動と各行動の前進の速度と角速度を記�
 		number of actions & 6\\
     \hline
   \end{tabular}
-\end{table}
-
-\begin{table}[hbtp]
 	\caption{type of actions}
 	\centering
 	\begin{tabular}{l|cc}
@@ -129,52 +137,33 @@ Table 3 には,6種類の行動と各行動の前進の速度と角速度を記�
 	\end{tabular}
 \end{table}
 
-\begin{figure}[h!]
-  \centering
-   \includegraphics[height=40mm]{./figs/tsudanuma.png}
-   \caption{the map for value iteration}
-\end{figure}
-
-\subsection{価値反復}
-今回使用する価値反復のROSパッケージ[4]は,2次元の離散化した占有格子地図を読み込み,ロボットの向きの1次元を加えた3次元の離散空間で経路計画を行っている.
-この離散空間を$\mathcal{S}$で表し,各区分$\mathit{s}\in\mathcal{S}$を離散状態と呼ぶ.
-大域計画器は,次の2つの写像を出力する.
-\begin{itemize}
-	\item 最適状態価値関数$\mathit{V^*}$: $\mathcal{S}\rightarrow\mathbb{R}$
-	\item 最適方策$\Pi\mathrm{^*}$: $\mathcal{S}\rightarrow\mathcal{A}$
-\end{itemize}
-$\mathcal{A}$は選択肢として用意された行動セット（Table3）のことである.
-ある離散状態$\mathit{s}\in\mathcal{S}$の値$\mathit{V^*}(\mathit{s})$は,$\mathit{s}$から最適方策$\Pi\mathrm{^*}$に
-したがって行動を取り続けた際のコストと移動時間の和の期待値である.
-コストとは衝突の危険性などを時間の損失に換算し,数値化したものであり,占有格子地図から計算される,または人から与えられる.
-
 \subsection{並列処理}
-価値反復のノード（vi\_node）は,他のノードからゴールを指定されると即座に価値反復を開始する.
-開始すると,自己位置推定のノードから出力されるロボットの推定姿勢のトピックを受けて,
-その時点で得られる方策に基づいて行動（Table3）を選択し,選んだ行動に対応するロボットの速度を出力する.
-価値反復のノードにはLinuxのPOSIXスレッドによる並列処理が導入されている.並列化されているのは,状態遷移確率を求める処理と価値反復を行う処理である.
+価値反復のノード（vi\_node）は, 他のノードからゴールを指定されると即座に価値反復を開始する.
+開始すると, 自己位置推定のノードから出力されるロボットの推定姿勢のトピックを受けて, 
+その時点で得られる方策に基づいて行動（Table3）を選択し, 選んだ行動に対応するロボットの速度を出力する.
+価値反復のノードにはLinuxのPOSIXスレッドによる並列処理が導入されている. 並列化されているのは, 状態遷移確率を求める処理と価値反復を行う処理である.
 
-状態遷移確率を求める処理は,ロボットが動作する前に一度だけ行うもので,スレッド数を多くしてCPUを使い切り短い時間で終わらせる実装になっている.
-$\theta$軸の離散区間ごとにスレッドを用意する実装になっていて,今回の実験では区間の幅が6$\mathrm{[deg]}$で,区間数が60個なので60個のスレッドが同時に走る.
-
-価値反復に用いるスレッドは設定で変更できるように実装されている.価値反復はロボットが動作しているときに実行されるため,
-演算に使用するスレッド数を多くしてしまうと,センサ処理の遅延などの悪影響が生じてしまう.
-
-
+価値反復に用いるスレッドは設定で変更できるように実装されている. 価値反復はロボットが動作しているときに実行されるため, 
+演算に使用するスレッド数を多くしてしまうと, センサ処理の遅延などの悪影響が生じてしまう. 
+しかし, スレッド数の増加によるナビゲーションにかかる時間の短縮と, 
+物理コア数以上のスレッド数を用いた場合, 短縮の効果が頭打ちであるという結果が上田らの研究[4]で示されている. 
+よって本研究では, 使用する計算機の物理コア数が8コアであるため, スレッド数は8に固定して実験を行う.
 \subsection{計算量の評価}
-評価する方法としては,上田らの研究[4]と同様の方法を用いる.
-しかし,スレッド数の増加によってナビゲーションにかかる時間が短縮すること,
-そして,物理コア数以上のスレッド数を用いた場合,短縮の効果が頭打ちであるという結果がでているので,
-本研究では使用する計算機の物理コア数が16コアであるため,スレッド数は16に固定して実験を行う.
-\subsection{実験結果}
-ロボットは価値反復の計算終了前に行動を開始するため,次のAとBの実験の時間の差から実質的な計算時間を評価する.
-Table 4 に A と B のそれぞれの場合の実験結果を示す.
-A と B の計測の内容は以下のとおりである.
+評価する方法としては, 上田らの研究[4]と同様の方法を用いる. 
+Fig. 1の「start」と書かれた地点から「goal」と書かれた地点まで, 次の2通りの方法で, それぞれ10回ずつロボットを走行させ, かかった時間を測定する.
 
 \begin{itemize}
 	\item A: 価値反復中からロボットを動作させて計測
 	\item B: 価値反復が終了したあとにロボットを動作させて計測
 \end{itemize}
+
+Aの場合, ロボットは価値反復の計算が完了する前に走行し始めるので, 開始時は最適ではない方策を用いる.
+Bの場合, ロボットは価値反復の計算が完了してから走行し始める. 
+この2通りの方法の時間の差（B-A）を実質的な計算時間とする.
+\subsection{実験結果}
+ロボットは価値反復の計算終了前に行動を開始するため, 次のAとBの実験の時間の差から実質的な計算時間を評価する. 
+Table 4 に A と B のそれぞれの場合の実験結果を示す. 
+A と B の計測の内容は以下のとおりである.
 
 \begin{table}[hbtp]
 	\caption{computational complexity}
@@ -190,30 +179,30 @@ A と B の計測の内容は以下のとおりである.
 	 \end{tabular}
  \end{table}
 
-Table4には,Aの実験とBの実験それぞれでの計測した時間の平均と標準偏差を記載した.
-Aの実験の平均時間とBの実験の平均時間の差より,今回の実験条件では実質的な価値反復の計算時間は84.6$\mathrm{[s]}$であった.
+Table4には, Aの実験とBの実験それぞれでの計測した時間の平均と標準偏差を記載した. 
+Aの実験の平均時間とBの実験の平均時間の差より, 今回の実験条件では実質的な価値反復の計算時間は84.6$\mathrm{[s]}$であった.
 
-今回の実験では価値反復に用いる地図と自己位置推定に用いる地図の大きさを同じにしていた.
-そのため自己位置推定に悪影響を及ぼさない大きさの地図を使って計算量の評価を行っていた.
-しかし,現在の地図の大きさだと価値反復の計算に時間がかかり過ぎてしまう.
-そのため,価値反復に用いる地図と自己位置推定に用いる地図を別々にすることで,価値反復に用いる地図を今以上に小さくすることができる.
-地図を小さくすることで,離散状態数が減少し価値反復の計算にかかる時間が短くなると考えられる.
+今回の実験では価値反復に用いる地図と自己位置推定に用いる地図の大きさを同じにしていた. 
+そのため自己位置推定に悪影響を及ぼさない大きさの地図を使って計算量の評価を行っていた. 
+しかし, 現在の地図の解像度だと価値反復の計算に時間がかかり過ぎてしまう. 
+そのため, 価値反復に用いる地図と自己位置推定に用いる地図を別々にすることで, 価値反復に用いる地図を今以上に小さくすることができる. 
+地図を小さくすることで, 離散状態数が減少し価値反復の計算にかかる時間が短くなると考えられる. 
 \section{結言}%===========================
-本稿では,価値反復を用いた実時間経路計画アルゴリズムを屋外移動ロボットで用い,屋外の実環境を走行させることで計算量を評価した.
-結果としては,3714.98$\mathrm{[m^2]}$のフリースペースがある環境において,地図の解像度を0.15$\mathrm{[m/pixel]}$,Intel Core i7-11800Hを有する計算機を用いると,
-84.6$\mathrm{[s]}$も計算に時間がかかってしまうという結果が得られた.
-結果から,屋外などの広い環境を想定した場合,今回の実験の条件では価値反復の計算に時間がかかり過ぎてしまうため,
+本稿では, 価値反復を用いた実時間経路計画アルゴリズムを屋外移動ロボットで用い, 屋外の実環境を走行させることで計算量を評価した. 
+結果としては, 3714.98$\mathrm{[m^2]}$のフリースペースがある環境において, 地図の解像度を0.15$\mathrm{[m/pixel]}$, 計算機としてIntel Core i7-11800Hを搭載したものを用いると, 
+15.6$\mathrm{m}$走行し, 84.6$\mathrm{[s]}$も計算に時間がかかってしまうという結果が得られた. 
+結果から, 屋外などの広い環境を想定した場合, 今回の実験の条件では価値反復の計算に時間がかかり過ぎてしまうため, 
 屋外での走行を想定した移動ロボットへの適用は適切ではないと言える.
 
-しかし,価値反復に使用する地図の解像度をできる限り下げることで,離散状態数が小さくなるので,価値反復の計算に用いる時間を短くすることができると考えられる.
+しかし, 価値反復に使用する地図の解像度をできる限り下げることで, 離散状態数が小さくなるので, 価値反復の計算に用いる時間を短くすることができると考えられる.
 
-今後は,価値反復に用いる地図の解像度をどこまで下げることで,屋外を想定した移動ロボットへの適用が可能になるのかということを調査する.
+今後は, 価値反復に用いる地図の解像度をどこまで下げることで, 屋外を想定した移動ロボットへの適用が可能になるのかということを調査する. 
 
 \footnotesize
 \begin{thebibliography}{99}
 
 	\bibitem{Shinjuku1}
-	Bellman, R., ``{\it Dynamic Programming},'' Princeton Uni-versity Press, Princeton, NJ, 1957.
+	Bellman, R., {\it Dynamic Programming}, Princeton Uni-versity Press, Princeton, NJ, 1957.
 
 	\bibitem{Shinjuku2}
 	上田隆一，池邉龍宏，林原靖男，``移動ロボットのナビゲーションのためのbrute-forceな価値反復を用いた大域計画・局所計画アルゴリズム'', 
