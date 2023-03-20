@@ -28,9 +28,13 @@
 \makeatother
 
 \abstract{ \small
-The authors used a real-time path planning algorithm with value iteration on an outdoor mobile robot and evaluated the computational complexity.
-Although the algorithm can theoretically obtain an optimal path, it is computationally expensive, so the authors investigated whether the algorithm can be applied to a real robot in a real outdoor environment with a free space of 3714.98$\mathrm{[m^2]}$.
-For the evaluation, the resolution of the map used for value iteration was set to 0.15$\mathrm{[m/pixel]}$, a computer with an Intel Core i7-11800H was used as the computing machine, and a Raspberry Pi Cat was used as the aircraft, and it was confirmed that the calculation was completed in 84.6$\mathrm{[s]}$. 
+We examine our software package for mobile robot navigation in the real world. 
+This software uses value iteration for updating a decision making policy 
+in the whole state space. Though the computational cost of this method
+is too large for current computers, we expect that it will be standard
+in future. In the experiments, we use this package with a laptop computer on
+a mobile robot. Though the calculation time is still a problem,  
+it works on the mobile robot for the first time. 
 }
 
 \date{} % 日付を出力しない
