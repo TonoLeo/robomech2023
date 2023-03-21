@@ -1,14 +1,14 @@
-template_robomech.pdf: template_robomech.dvi
-	dvipdfmx -p a4 -f font.map template_robomech.dvi
+main.pdf: main.dvi
+	dvipdfmx -p a4 -f font.map main.dvi
 
-template_robomech.dvi: *.tex
-	sed -e 's/。/．/g' -e 's/、/，/g' template_robomech.tex > tmp.tex
+main.dvi: *.tex
+	sed -e 's/。/．/g' -e 's/、/，/g' main.tex > tmp.tex
 	platex tmp.tex
 	# pbibtex tmp.aux
 	platex tmp.tex
 	platex tmp.tex
 	platex tmp.tex
-	mv tmp.dvi template_robomech.dvi
+	mv tmp.dvi main.dvi
 
 clean:
-	rm -f *.aux *.log *.dvi *.bbl *.blg *.ilg *.idx *.toc *.ind tmp.*
+	rm -f *.aux *.log *.dvi *.bbl *.blg *.ilg *.idx *.toc *.ind tmp.* *.pdf
