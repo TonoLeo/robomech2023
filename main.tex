@@ -91,6 +91,11 @@ Raspberry Pi Catに、図\ref{fig:raspicat}のように
 ノートPCは、CPUとしてIntel Core i7-11800H（8コア16スレッド）、
 DRAMとしてDDR4-3200 64GBを持つノート型パソコン（ノートPC）
 を搭載している。
+今回の実験は、価値反復ROSパッケージが実機でナビゲーション
+可能かどうかを調査する目的があるため、パッケージに変更は加えなかった。
+ロボットのとれる速度、角速度の組み合わせ（行動）も、
+\cite{上田rsj2021}と同じく6種類のままとした。
+これらの行動を表\ref{table:actions}に示す。
 
 \begin{figure}[htb]
   \centering
@@ -99,10 +104,27 @@ DRAMとしてDDR4-3200 64GBを持つノート型パソコン（ノートPC）
 	\label{fig:raspicat}
 \end{figure}
 
+\begin{table}[hbtp]
+	\caption{Actions}
+	\label{table:actions}
+	\centering
+	\begin{small}
+	\begin{tabular}{l|cc}
+ 		\hline
+		& forward & angular \\
+ 		type & verosity[m/s] & verosity[deg/s] \\
+ 		\hline \hline
+ 		forward & 0.3 & 0.0 \\
+ 		backward & -0.2 & 0.0 \\
+ 		right & 0.0 & -20.0 \\
+ 		left & 0.0 & 20.0 \\
+ 		right forward & 0.2 & -20.0 \\
+ 		left forward & 0.2 & 20.0 \\
+	 \hline
+	\end{tabular}
+	\end{small}
+\end{table}
 
-%@@@ここにパッケージの変更点を書く。ないならそう書く@@@
-今回の実験では, 使用する価値反復のROSパッケージが実機でナビゲーション可能かどうかを調査する目的があったため,
-パッケージに変更点は加えなかった.
 
 \subsection{環境と地図}
 
@@ -147,6 +169,17 @@ $3.7\times 10^3$[m$^2$]と、\cite{上田rsj2021}
 	\end{small}
 \end{table}
 
+\begin{table}[hbtp]
+	\caption{parameters for value iterations}
+  \centering
+  \begin{tabular}{l|r}
+    \hline
+    number of states & 156,920,760\\
+    number of free states &  9,904,560\\
+		number of actions & 6\\
+    \hline
+  \end{tabular}
+\end{table}
 
 \section{実験}%===========================
 
@@ -165,32 +198,6 @@ Table 3には, 6種類の行動と各行動の前進の速度と角速度を記�
 
 
 
-\begin{table}[hbtp]
-	\caption{parameters for value iterations}
-  \centering
-  \begin{tabular}{l|r}
-    \hline
-    number of states & 156,920,760\\
-    number of free states &  9,904,560\\
-		number of actions & 6\\
-    \hline
-  \end{tabular}
-	\caption{type of actions}
-	\centering
-	\begin{tabular}{l|cc}
- 		\hline
-		& forward & angular \\
- 		type & versity[m/s] & versity[deg/s] \\
- 		\hline \hline
- 		forward & 0.3 & 0.0 \\
- 		backward & -0.2 & 0.0 \\
- 		right & 0.0 & -20.0 \\
- 		left & 0.0 & 20.0 \\
- 		right forward & 0.2 & -20.0 \\
- 		left forward & 0.2 & 20.0 \\
-	 \hline
-	\end{tabular}
-\end{table}
 
 \subsection{並列処理}
 価値反復のノード（vi\_node）は, 他のノードからゴールを指定されると即座に価値反復を開始する.
