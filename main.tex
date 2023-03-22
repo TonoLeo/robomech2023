@@ -144,15 +144,23 @@ Raspberry Pi Catを走らせる環境は、
 	\label{fig:tsudanuma}
 \end{figure}
 
-表\ref{table:map}に、この地図のパラメータ等を示す。
-画素数は幅1962$\mathrm{[pixel]}$, 
-高さ1333$\mathrm{[pixel]}$で、
+この地図のパラメータ等を
+表\ref{table:map}に示す。
+画素数は幅1,962[pixel]、
+高さ1,333[pixel]で、
 1画素あたりの解像度は幅、高さとも150[mm]である。
 計算量に大きく関係する白色の画素の面積は
 $3.7\times 10^3$[m$^2$]と、\cite{上田rsj2021}
 の実験の30倍を超える。
 
-\begin{table}[hbt]
+表\ref{table:cells}は価値反復のために、
+地図の$XY$平面に加えてロボットの向き$\theta$
+も離散化して作った離散状態の数を示したものである。
+$\theta$軸は6[deg]ごとに60分割したので、
+離散状態数は表\ref{table:map}の値の60倍となる。
+結果、障害物のない離散状態数は990万個となった。
+
+\begin{table}[bth]
   \caption{conﬁgurations of the map}
 	\label{table:map}
   \centering
@@ -169,8 +177,9 @@ $3.7\times 10^3$[m$^2$]と、\cite{上田rsj2021}
 	\end{small}
 \end{table}
 
-\begin{table}[hbtp]
+\begin{table}[bth]
 	\caption{parameters for value iterations}
+	\label{table:cells}
   \centering
   \begin{tabular}{l|r}
     \hline
