@@ -99,7 +99,7 @@ DRAMとしてDDR4-3200 64GBを持つノート型パソコン（ノートPC）
 
 \begin{figure}[htb]
   \centering
-   \includegraphics[height=53mm]{./figs/raspicat.png}
+   \includegraphics[height=55mm]{./figs/raspicat.png}
    \caption{Experimental setup}
 	\label{fig:raspicat}
 \end{figure}
@@ -139,7 +139,7 @@ Raspberry Pi Catを走らせる環境は、
 
 \begin{figure}[htb]
   \centering
-   \includegraphics[height=53mm]{./figs/tsudanuma.png}
+   \includegraphics[height=55mm]{./figs/tsudanuma.png}
    \caption{the map for value iteration}
 	\label{fig:tsudanuma}
 \end{figure}
@@ -175,9 +175,6 @@ $\theta$軸は6[deg]ごとに60分割したので、
     \hline
   \end{tabular}
 	\end{small}
-\end{table}
-
-\begin{table}[bth]
 	\caption{parameters for value iterations}
 	\label{table:cells}
   \centering
@@ -201,16 +198,39 @@ $\theta$軸は6[deg]ごとに60分割したので、
 自己位置推定には上田が作成したROSのemclパッケージ
 （\url{https://github.com/ryuichiueda/emcl}）を用いた。
 
+\begin{figure}[htb]
+  \centering
+   \includegraphics[height=61mm]{./figs/raspicat-start.png}
+   \caption{Before goal installation}
+	\label{fig:raspicat-start}
+\end{figure}
+
+図\ref{fig:raspicat-start}のように、
 スタート地点に置かれたロボットは、
 ゴール地点を予め指示されておらず、
+図\ref{fig:raspicat-no-local}のように、
 ゴール地点を指示されてから移動と価値反復を同時に行う。
 ゴール地点を指示されてから、
 ゴール地点にロボットが達するまでの時間を試行の所要時間とする。
 
+\begin{figure}[htb]
+  \centering
+   \includegraphics[height=55mm]{./figs/raspicat-no-local.png}
+   \caption{setting the goal on online}
+	\label{fig:raspicat-no-local}
+\end{figure}
+
 計算量の評価のために、
+図\ref{fig:raspicat-after-planning}のように、
 価値反復が終了して最適解が得られたあとに、
 ロボットをスタート地点からゴール地点まで走らせる
 試行も10回行った。
+\begin{figure}[htb]
+  \centering
+   \includegraphics[height=55mm]{./figs/raspicat-after-planning.png}
+   \caption{setting the goal on offline}
+	\label{fig:raspicat-after-planning}
+\end{figure}
 この試行（オフライン計算を用いる試行）の時間を、
 上記のスタートと同時に計算を開始する試行（オンライン計算を用いる試行）
 から引くと、オンラインで計算にかかった実質的な時間となる。
