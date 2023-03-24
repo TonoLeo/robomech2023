@@ -289,39 +289,25 @@ $158$[m]を走行させて、前節よりも長距離を走行できることを
 
 \begin{figure}[htb]
   \centering
-   \includegraphics[height=45mm]{./figs/tsudanuma-long.png}
+   \includegraphics[height=55mm]{./figs/tsudanuma-long.png}
    \caption{the goal and path}
 	\label{fig:tsudanuma-long-path}
 \end{figure}
 
 \begin{figure}[htb]
   \centering
-   \includegraphics[height=45mm]{./figs/raspicat-long-value.png}
+   \includegraphics[height=55mm]{./figs/raspicat-value-function.png}
    \caption{value functon at the start running}
-	\label{fig:raspicat-long-path}
-\end{figure}
-
-図\ref{fig:raspicat-long-path}にロボットが走り出せる状態になったときの価値関数を示し、
-図\ref{fig:raspicat-value-function}にはゴールに到達する直前の最終的な価値関数を示す。
-ロボットの走行開始時には、価値関数は計算途中のため収束していない。
-そのため計算途中の方策を用いているが、
-ロボットは乱れた挙動をすることなく走行することができた。
-
-\begin{figure}[htb]
-  \centering
-   \includegraphics[height=45mm]{./figs/raspicat-value-function.png}
-   \caption{completion of value function}
 	\label{fig:raspicat-value-function}
 \end{figure}
 
-表のようにオンライン計算とオフライン計算での
-所要時間の差は$35.1$[s]であった。
-一度だけの試行であるので
-表\ref{table:result}と比較はできないが、
-距離の増加に伴って大きく計算量が増加するという
-現象は確認されなかった。
-ゴール地点が同じなら価値反復の計算量が変わることはないため、
-試行を重ねても、この所要時間の差は大きく変わらないと考えられる。
+図\ref{fig:raspicat-value-function}には、
+ロボットが走り出せる状態になったとき（ゴールを設置してから$50$[s]後）の価値関数を示めす。
+ロボットは走り出せない状態のときには、
+止まらず、その時点で得られる方策に基づいて行動する。
+ロボットの走行開始時には、価値関数は計算途中のため収束していない。
+そのため計算途中の方策を用いているが、
+ロボットは乱れた挙動をすることなく走行することができた。
 
 \begin{table}[hbtp]
 	\caption{Required time for each trial}
@@ -340,6 +326,15 @@ $158$[m]を走行させて、前節よりも長距離を走行できることを
 	 \end{tabular}
 	\end{small}
 \end{table}
+
+表のようにオンライン計算とオフライン計算での
+所要時間の差は$35.1$[s]であった。
+一度だけの試行であるので
+表\ref{table:result}と比較はできないが、
+距離の増加に伴って大きく計算量が増加するという
+現象は確認されなかった。
+ゴール地点が同じなら価値反復の計算量が変わることはないため、
+試行を重ねても、この所要時間の差は大きく変わらないと考えられる。
 
 \section{結言}%===========================
 
