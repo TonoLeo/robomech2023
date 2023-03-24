@@ -68,12 +68,13 @@ it works on the mobile robot for the first time.
 利用できる電力に制限があり、
 また、計算能力に余力がないと、ロボットの動作が不安定になる可能性がある。
 
-
 そこで本稿では、このパッケージを屋外移動ロボットで用い、
 実機がこのパッケージで実際にナビゲーション可能かどうかと、
 実環境での計算量を調査する。
-2章で今回行った実験の環境や結果, 実験に用いるROSパッケージについて説明し、
-3章では結言を述べる。
+
+本稿は4章で構成される。
+2章で実機への適用と今回行った実験の環境について説明し、
+3章で評価を行い、4章で結言を述べる。
 
 %※ 講演番号、講演会名、ページ番号は記載しないようにして下さい。
 \section{実装}%===========================
@@ -100,7 +101,7 @@ DRAMとしてDDR4-3200 64GBを持つノート型パソコン（ノートPC）
 \begin{figure}[htb]
   \centering
    \includegraphics[height=55mm]{./figs/raspicat.png}
-   \caption{experimental setup}
+   \caption{Raspberry Pi Cat}
 	\label{fig:raspicat}
 \end{figure}
 
@@ -218,7 +219,7 @@ $\theta$軸は6[deg]ごとに60分割したので、
 
 \begin{figure}[htb]
   \centering
-   \includegraphics[height=55mm]{./figs/raspicat-no-local.png}
+   \includegraphics[height=58mm]{./figs/raspicat-online.png}
    \caption{calculation of value function on navigaion}
 	\label{fig:raspicat-no-local}
 \end{figure}
@@ -228,12 +229,14 @@ $\theta$軸は6[deg]ごとに60分割したので、
 価値反復が終了して最適解が得られたあとに、
 ロボットをスタート地点からゴール地点まで走らせる
 試行も10回行った。
+
 \begin{figure}[htb]
   \centering
-   \includegraphics[height=55mm]{./figs/raspicat-after-planning.png}
+   \includegraphics[height=58mm]{./figs/raspicat-offline.png}
    \caption{offline planning}
 	\label{fig:raspicat-after-planning}
 \end{figure}
+
 この試行（オフライン計算を用いる試行）の時間を、
 上記のスタートと同時に計算を開始する試行（オンライン計算を用いる試行）
 から引くと、オンラインで計算にかかった実質的な時間となる。
@@ -279,11 +282,37 @@ $\theta$軸は6[deg]ごとに60分割したので、
 
 図\ref{fig:tsudanuma-long-path}にあるスタートからゴールまでの
 $158$[m]を走行させて、前節よりも長距離を走行できることを確認した。
-図\ref{fig:value-function}にはゴール地点を指示してから$40$[s]後の価値関数を示す。
 オンライン計算、オフライン計算を一度ずつ試行しただけであるが、
 走行時間を比較したものを表\ref{table:result2}に示す。
 オンライン計算の開始時以外には、どちらの試行でも
 ロボットの走行には特に乱れがなかった。
+
+\begin{figure}[htb]
+  \centering
+   \includegraphics[height=45mm]{./figs/tsudanuma-long.png}
+   \caption{the goal and path}
+	\label{fig:tsudanuma-long-path}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+   \includegraphics[height=45mm]{./figs/raspicat-long-value.png}
+   \caption{value functon at the start running}
+	\label{fig:raspicat-long-path}
+\end{figure}
+
+図\ref{fig:raspicat-long-path}にロボットが走り出せる状態になったときの価値関数を示し、
+図\ref{fig:raspicat-value-function}にはゴールに到達する直前の最終的な価値関数を示す。
+ロボットの走行開始時には、価値関数は計算途中のため収束していない。
+そのため計算途中の方策を用いているが、
+ロボットは乱れた挙動をすることなく走行することができた。
+
+\begin{figure}[htb]
+  \centering
+   \includegraphics[height=45mm]{./figs/raspicat-value-function.png}
+   \caption{completion of value function}
+	\label{fig:raspicat-value-function}
+\end{figure}
 
 表のようにオンライン計算とオフライン計算での
 所要時間の差は$35.1$[s]であった。
@@ -293,21 +322,6 @@ $158$[m]を走行させて、前節よりも長距離を走行できることを
 現象は確認されなかった。
 ゴール地点が同じなら価値反復の計算量が変わることはないため、
 試行を重ねても、この所要時間の差は大きく変わらないと考えられる。
-
-
-\begin{figure}[htb]
-  \centering
-   \includegraphics[height=55mm]{./figs/tsudanuma-long.png}
-   \caption{the goal and path}
-	\label{fig:tsudanuma-long-path}
-\end{figure}
-
-\begin{figure}[htb]
-  \centering
-   \includegraphics[height=53mm]{./figs/tsudanuma-long-value.png}
-   \caption{value function after 40 seconds}
-	\label{fig:value-function}
-\end{figure}
 
 \begin{table}[hbtp]
 	\caption{Required time for each trial}
