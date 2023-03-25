@@ -98,12 +98,21 @@ DRAMとしてDDR4-3200 64GBを持つノート型パソコン（ノートPC）
 \cite{上田rsj2021}と同じく6種類のままとした。
 これらの行動を表\ref{table:actions}に示す。
 
-\begin{figure}[htb]
+\begin{figure}[bt]
   \centering
-   \includegraphics[height=55mm]{./figs/raspicat.png}
+   \includegraphics[width=0.6\linewidth]{./figs/raspicat.png}
    \caption{Raspberry Pi Cat}
 	\label{fig:raspicat}
 \end{figure}
+
+価値反復ROSパッケージは価値反復を
+マルチスレッドで計算するが、
+本稿の実験ではスレッド数を、CPUの物理コア数と同じ$8$とした。
+スレッドは、環境全体で計算する大域計画器と、
+ロボットの周辺のみで計算する局所計画器の
+2種類の計画器に任意の数を割り当てることができる。
+本稿の実験では、大域計画器に$8$のスレッドを割り当て、
+局所計画器については使用せず$0$とした。
 
 \begin{table}[hbtp]
 	\caption{actions}
@@ -138,7 +147,7 @@ Raspberry Pi Catを走らせる環境は、
 障害物のない画素、黒色が障害物のある画素、
 灰色が不明な画素を表す。
 
-\begin{figure}[htb]
+\begin{figure}[bt]
   \centering
    \includegraphics[height=55mm]{./figs/tsudanuma.png}
    \caption{the map for value iteration}
@@ -161,7 +170,7 @@ $\theta$軸は6[deg]ごとに60分割したので、
 離散状態数は表\ref{table:map}の値の60倍となる。
 結果、障害物のない離散状態数は990万個となった。
 
-\begin{table}[bth]
+\begin{table}[bt]
   \caption{conﬁgurations of the map}
 	\label{table:map}
   \centering
@@ -204,10 +213,10 @@ $\theta$軸は6[deg]ごとに60分割したので、
 上田らが作成したROSのemclパッケージ
 （\url{https://github.com/ryuichiueda/emcl}）を用いた。
 
-\begin{figure}[htb]
+\begin{figure}[bt]
   \centering
    \includegraphics[height=61mm]{./figs/raspicat-start.png}
-	\caption{Status before assignment of the goal}
+	\caption{status before assignment of the goal}
 	\label{fig:raspicat-start}
 \end{figure}
 
@@ -253,16 +262,13 @@ $\theta$軸は6[deg]ごとに60分割したので、
 考えることができる。
 
 
-\begin{figure}[htb]
+\begin{figure}[bt]
   \centering
-   \includegraphics[height=58mm]{./figs/raspicat-online.png}
+   \includegraphics[width=1.0\linewidth]{./figs/raspicat-online.png}
    \caption{calculation of value function on navigaion}
 	\label{fig:raspicat-no-local}
-\end{figure}
-
-\begin{figure}[b]
-  \centering
-   \includegraphics[height=58mm]{./figs/raspicat-offline.png}
+	\vspace{1em}
+   \includegraphics[width=1.0\linewidth]{./figs/raspicat-offline.png}
    \caption{offline planning}
 	\label{fig:raspicat-after-planning}
 \end{figure}
@@ -344,16 +350,14 @@ $\theta$軸は6[deg]ごとに60分割したので、
 さらに試行を重ねても、実質的な計算時間が$35.1$[s]
 より大きく増加することはないと考えられる。
 
-\begin{figure}[htb]
+\begin{figure}[bt]
   \centering
-   \includegraphics[height=55mm]{./figs/tsudanuma-long.png}
+   \includegraphics[width=1.0\linewidth]{./figs/tsudanuma-long.png}
 	\caption{158[m] path}
 	\label{fig:tsudanuma-long-path}
-\end{figure}
-
-\begin{figure}[htb]
+	\vspace{1em}
   \centering
-   \includegraphics[height=55mm]{./figs/raspicat-value-function.png}
+	\includegraphics[width=1.0\linewidth]{./figs/raspicat-value-function.png}
    \caption{value functon at the start running}
 	\label{fig:raspicat-value-function}
 \end{figure}
